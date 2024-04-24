@@ -12,7 +12,7 @@ module.exports = {
         try {
             const sendoffer = await offerdb.find({}).sort({ categoryName: 1 });
             const totalCount = await offerdb.countDocuments();
-            res.render("./admin/categoryoffer", {
+            res.render("./admin/categoryOffer", {
                 sendoffer,
                 totalCount,
             });
