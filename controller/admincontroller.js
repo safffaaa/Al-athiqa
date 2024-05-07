@@ -133,9 +133,19 @@ module.exports = {
                     $limit: 1
                 }
             ])
+            const sales = await orders.aggregate([
+                { $match: { status: "Delivered" } },
+                { $group: { _id: null, totalSalesCount: { $sum: 1 } } }
+            ])
+            const totalRevenue = await orders.aggregate([
+                { $match: { status: "Delivered" } },
+                { $group: { _id: null, totalSalesAmount: { $sum: "$totalAmount" } } }
+            ])
+            const customers = await user.find().countDocuments()
+            // console.log(sales, "\n", totalRevenue, "\n", customers);
+
             const topSellCategory = await category.find({_id: cat})
-            console.log(topSellCategory);
-            res.render('./admin/dashboard', { topSellOrder, topSellCategory })
+            res.render('./admin/dashboard', { topSellOrder, topSellCategory, sales, totalRevenue, customers })
         } catch (error) {
             console.log(error)
             res.status(500).render("error500", { message: "Internal Server Error" })
